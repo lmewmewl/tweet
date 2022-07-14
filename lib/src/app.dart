@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
+import 'package:tweet_sample/screens/main_screen/ui/main_screen.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -25,7 +27,9 @@ class MyApp extends StatelessWidget {
           AppLocalizations.of(context)!.appTitle,
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
-      home: Container(),
+      home: MainScreen(
+        mainVM: MainScreenVM(),
+      ),
     );
   }
 }

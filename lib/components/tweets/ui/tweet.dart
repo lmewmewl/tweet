@@ -5,7 +5,7 @@ import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
 class TweetWidget extends StatefulWidget {
   final int id;
   final String content;
-  final String reaction;
+  final String? reaction;
   final bool isReacted;
   final TweetReaction tweetReactions;
   final TweetVM tweetVM;
@@ -38,8 +38,16 @@ class _TweetWidgetState extends State<TweetWidget> {
               });
         },
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.content),
+            Text(
+              widget.content,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),

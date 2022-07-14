@@ -8,8 +8,6 @@ enum Reactions { thumbUp, thumbDown, like, noReaction }
 class TweetVM {
   Reactions currentReaction = Reactions.noReaction;
 
-  final currentReactionProvider = Provider((_) => Reactions.noReaction);
-
   Widget reaction(Reactions reacts) {
     switch (reacts) {
       case Reactions.thumbUp:

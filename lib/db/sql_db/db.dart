@@ -26,11 +26,11 @@ class SqlDB {
 
   /// Inition tweet database
   initTweetDB() async {
-    Directory _docDir = await getApplicationSupportDirectory();
-    String _dbPath = join(_docDir.path, 'tweet_db.db');
+    Directory docDir = await getApplicationSupportDirectory();
+    String dbPath = join(docDir.path, 'tweet_db.db');
 
     return await openDatabase(
-      _dbPath,
+      dbPath,
       version: 1,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
@@ -46,11 +46,11 @@ class SqlDB {
 
   /// Inition tweet database counts
   initTweetCountDB() async {
-    Directory _docDir = await getApplicationSupportDirectory();
-    String _dbPath = join(_docDir.path, 'tweet_counter_db.db');
+    Directory docDir = await getApplicationSupportDirectory();
+    String dbPath = join(docDir.path, 'tweet_counter_db.db');
 
     return await openDatabase(
-      _dbPath,
+      dbPath,
       version: 1,
       onOpen: (db) {},
       onCreate: (Database db, int version) async {
