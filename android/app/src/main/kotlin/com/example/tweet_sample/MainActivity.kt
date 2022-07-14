@@ -1,0 +1,6 @@
+package com.example.tweet_sample
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
