@@ -27,49 +27,46 @@ class _TweetWidget extends State<TweetWidget> {
     BuildContext context,
   ) {
     return Observer(builder: (_) {
-      return Container(
-        child: TextButton(
-          onPressed: () {
-            (tweetVM.isReacted == false)
-                ? showModalBottomSheet<void>(
-                    context: _,
-                    builder: (BuildContext context) {
-                      return TweetReaction(
-                        reactionLike: () {
-                          tweetVM.changeReactionStatus(Reactions.like, true);
-                          Navigator.pop(_);
-                        },
-                        reactionThumbDown: () {
-                          tweetVM.changeReactionStatus(
-                              Reactions.thumbDown, true);
-                          Navigator.pop(_);
-                        },
-                        reactionThumbUp: () {
-                          tweetVM.changeReactionStatus(Reactions.thumbUp, true);
-                          Navigator.pop(_);
-                        },
-                      );
-                    })
-                : tweetVM.changeReactionStatus(Reactions.noReaction, false);
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                tweetData.content,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
-                ),
+      return TextButton(
+        onPressed: () {
+          (tweetVM.isReacted == false)
+              ? showModalBottomSheet<void>(
+                  context: _,
+                  builder: (BuildContext context) {
+                    return TweetReaction(
+                      reactionLike: () {
+                        tweetVM.changeReactionStatus(Reactions.like, true);
+                        Navigator.pop(_);
+                      },
+                      reactionThumbDown: () {
+                        tweetVM.changeReactionStatus(Reactions.thumbDown, true);
+                        Navigator.pop(_);
+                      },
+                      reactionThumbUp: () {
+                        tweetVM.changeReactionStatus(Reactions.thumbUp, true);
+                        Navigator.pop(_);
+                      },
+                    );
+                  })
+              : tweetVM.changeReactionStatus(Reactions.noReaction, false);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              tweetData.content,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              tweetVM.widgetReactionChange(tweetVM.currentReaction)
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            tweetVM.widgetReactionChange(tweetVM.currentReaction)
+          ],
         ),
       );
     });

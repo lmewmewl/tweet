@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
-import 'package:tweet_sample/components/tweets/ui/tweet.dart';
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,22 +18,30 @@ class _MainScreenState extends State<MainScreen> {
   MainScreenVM get mainVM => widget.mainVM;
 
   @override
+  void initState() {
+    mainVM.getTweetList();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tweets'),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 10,
+      body: Observer(
+        builder: (_) {
+          return mainVM.mainTweetWidget(mainVM.currrentStatus);
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => print('Bump'),
+        child: const Icon(
+          Icons.sailing,
+          size: 20,
+          color: Colors.black,
         ),
-        itemCount: mainVM.tweetList.length,
-        itemBuilder: (context, index) => TweetWidget(
-          tweetVM: TweetVM(isReacted: mainVM.tweetList[index].isReacted),
-          tweetData: mainVM.tweetList[index],
-        ),
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
       ),
     );
   }

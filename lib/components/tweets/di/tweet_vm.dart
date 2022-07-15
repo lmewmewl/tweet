@@ -3,9 +3,10 @@ import 'package:mobx/mobx.dart';
 
 part 'tweet_vm.g.dart';
 
+/// Tweet reactions
 enum Reactions { thumbUp, thumbDown, like, noReaction }
 
-// final TweetVM
+/// Tweet View Model
 class TweetVM = _TweetVM with _$TweetVM;
 
 abstract class _TweetVM with Store {

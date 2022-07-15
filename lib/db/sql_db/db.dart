@@ -2,13 +2,15 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 
 /// Sql db class
 class SqlDB {
-  /// SQL database instance
-  static final SqlDB db = SqlDB();
+  /// Singleton instance
+  SqlDB._();
+  static final SqlDB instance = SqlDB._();
+
   Database? _tweetsDB;
-  Database? _tweetsCountDB;
 
   /// Init database tweets
   Future<Database> get databaseTweets async {
@@ -17,47 +19,78 @@ class SqlDB {
     return _tweetsDB!;
   }
 
-  /// Init database tweets count
-  Future<Database> get databaseTweetsCounts async {
-    if (_tweetsCountDB != null) return _tweetsCountDB!;
-    _tweetsCountDB = await initTweetDB();
-    return _tweetsCountDB!;
-  }
-
   /// Inition tweet database
   initTweetDB() async {
     Directory docDir = await getApplicationSupportDirectory();
     String dbPath = join(docDir.path, 'tweet_db.db');
 
-    return await openDatabase(
-      dbPath,
-      version: 1,
-      onOpen: (db) {},
-      onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE tweets ("
-            "id INTEGER PRIMARY KEY,"
-            "content TEXT,"
-            "reaction TEXT,"
-            "isReacted TEXT"
-            " )");
-      },
-    );
+    return await openDatabase(dbPath,
+        version: 1, onOpen: (db) {}, onCreate: _onCreateInitTweetDB);
   }
 
-  /// Inition tweet database counts
-  initTweetCountDB() async {
-    Directory docDir = await getApplicationSupportDirectory();
-    String dbPath = join(docDir.path, 'tweet_counter_db.db');
+  /// On create
+  Future _onCreateInitTweetDB(Database db, int version) async {
+    const intType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const boolType = 'BOOLEAN NOT NULL';
+    const stringType = 'TEXT NOT NULL';
+    const reactionType = 'TEXT';
 
-    return await openDatabase(
-      dbPath,
-      version: 1,
-      onOpen: (db) {},
-      onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE tweetsCount ("
-            "tweetsCount INTEGER PRIMARY KEY,"
-            " )");
-      },
+    await db.execute('''CREATE TABLE $tableTweets (
+        ${TweetModelFileds.id} $intType,
+        ${TweetModelFileds.content} $stringType,
+        ${TweetModelFileds.reaction} $reactionType,
+        ${TweetModelFileds.isReacted} $boolType
+         )''');
+  }
+
+  /// Close db
+  Future closeTweetDB() async {
+    final db = await instance._tweetsDB;
+
+    db!.close();
+  }
+
+  Future<TweetModel> create(TweetModel model) async {
+    final db = await instance.databaseTweets;
+    final tweet = await db.insert(tableTweets, model.toMap());
+
+    return model.copy(id: tweet);
+  }
+
+  /// Read single tweet
+  Future<TweetModel> readTweet(int id) async {
+    final db = await instance.databaseTweets;
+
+    final map = await db.query(
+      tableTweets,
+      columns: TweetModelFileds.values,
+      where: '${TweetModelFileds.id} = ?',
+      whereArgs: [id],
+    );
+
+    if (map.isNotEmpty) {
+      return TweetModel.fromMap(map.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
+  /// Read all tweets
+  Future<List<TweetModel>> readAllTweets() async {
+    final db = await instance.databaseTweets;
+
+    final list = await db.query(tableTweets);
+
+    return list.map((json) => TweetModel.fromMap(json)).toList();
+  }
+
+  Future<int> updateTweet(TweetModel model) async {
+    final db = await instance.databaseTweets;
+    return db.update(
+      tableTweets,
+      model.toMap(),
+      where: '${TweetModelFileds.id} = ?',
+      whereArgs: [model.id],
     );
   }
 }
