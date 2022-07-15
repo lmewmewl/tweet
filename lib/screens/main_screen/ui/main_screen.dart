@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tweet_sample/components/tweet_reactions/ui/tweet_reaction.dart';
 import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
+
 import 'package:tweet_sample/components/tweets/ui/tweet.dart';
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
 class MainScreen extends StatefulWidget {
   final MainScreenVM mainVM;
-  const MainScreen({Key? key, required this.mainVM}) : super(key: key);
+  const MainScreen({
+    Key? key,
+    required this.mainVM,
+  }) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -28,16 +31,10 @@ class _MainScreenState extends State<MainScreen> {
         ),
         itemCount: mainVM.tweetList.length,
         itemBuilder: (context, index) => TweetWidget(
-          id: mainVM.tweetList[index].id,
-          content: mainVM.tweetList[index].content,
-          reaction: mainVM.tweetList[index].reaction,
-          isReacted: mainVM.tweetList[index].isReacted,
-          tweetReactions: TweetReaction(),
-          tweetVM: TweetVM(),
+          tweetVM: TweetVM(isReacted: mainVM.tweetList[index].isReacted),
+          tweetData: mainVM.tweetList[index],
         ),
-        separatorBuilder: (BuildContext context, int index) => const SizedBox(
-          height: 10,
-        ),
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
       ),
     );
   }

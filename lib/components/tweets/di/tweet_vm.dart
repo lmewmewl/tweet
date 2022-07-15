@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobx/mobx.dart';
+
+part 'tweet_vm.g.dart';
 
 enum Reactions { thumbUp, thumbDown, like, noReaction }
 
 // final TweetVM
+class TweetVM = _TweetVM with _$TweetVM;
 
-class TweetVM {
+abstract class _TweetVM with Store {
+  bool isReacted;
+
+  @observable
   Reactions currentReaction = Reactions.noReaction;
 
-  Widget reaction(Reactions reacts) {
+  _TweetVM({
+    required this.isReacted,
+  });
+
+  @action
+  void changeReactionStatus(Reactions current, bool reaction) {
+    currentReaction = current;
+    isReacted = reaction;
+  }
+
+  @action
+  Widget widgetReactionChange(Reactions reacts) {
     switch (reacts) {
       case Reactions.thumbUp:
         {

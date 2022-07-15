@@ -1,62 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tweet_sample/components/tweet_reactions/ui/tweet_reaction.dart';
 import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
+import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 
 class TweetWidget extends StatefulWidget {
-  final int id;
-  final String content;
-  final String? reaction;
-  final bool isReacted;
-  final TweetReaction tweetReactions;
+  final TweetModel tweetData;
   final TweetVM tweetVM;
   const TweetWidget({
     Key? key,
-    required this.id,
-    required this.content,
-    required this.reaction,
-    required this.isReacted,
-    required this.tweetReactions,
     required this.tweetVM,
+    required this.tweetData,
   }) : super(key: key);
 
   @override
-  State<TweetWidget> createState() => _TweetWidgetState();
+  State<TweetWidget> createState() => _TweetWidget();
 }
 
-class _TweetWidgetState extends State<TweetWidget> {
+class _TweetWidget extends State<TweetWidget> {
   TweetVM get tweetVM => widget.tweetVM;
 
+  TweetModel get tweetData => widget.tweetData;
+
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: TextButton(
-        onPressed: () {
-          showModalBottomSheet<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return widget.tweetReactions;
-              });
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.content,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black,
+  Widget build(
+    BuildContext context,
+  ) {
+    return Observer(builder: (_) {
+      return Container(
+        child: TextButton(
+          onPressed: () {
+            (tweetVM.isReacted == false)
+                ? showModalBottomSheet<void>(
+                    context: _,
+                    builder: (BuildContext context) {
+                      return TweetReaction(
+                        reactionLike: () {
+                          tweetVM.changeReactionStatus(Reactions.like, true);
+                          Navigator.pop(_);
+                        },
+                        reactionThumbDown: () {
+                          tweetVM.changeReactionStatus(
+                              Reactions.thumbDown, true);
+                          Navigator.pop(_);
+                        },
+                        reactionThumbUp: () {
+                          tweetVM.changeReactionStatus(Reactions.thumbUp, true);
+                          Navigator.pop(_);
+                        },
+                      );
+                    })
+                : tweetVM.changeReactionStatus(Reactions.noReaction, false);
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                tweetData.content,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            (widget.isReacted == true)
-                ? tweetVM.reaction(tweetVM.currentReaction)
-                : Container(),
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+              tweetVM.widgetReactionChange(tweetVM.currentReaction)
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

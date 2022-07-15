@@ -22,8 +22,8 @@ dependencies:
   intl: ^0.17.0
 
   # State manager
-  riverpod: ^1.0.3
-  flutter_riverpod: ^1.0.4
+  mobx: ^2.0.7+4
+  flutter_mobx: ^2.0.6+1
 
   # Service locator
   get_it: ^7.2.0
@@ -31,11 +31,17 @@ dependencies:
   # Path provider
   path_provider: ^2.0.11
 
+  # Codegen
+  mobx_codegen: ^2.0.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+
+  # Runner
+  build_runner: ^2.2.0
 
 flutter:
   uses-material-design: true

@@ -7,9 +7,9 @@ class TweetReaction extends StatefulWidget {
 
   const TweetReaction({
     Key? key,
-    this.reactionThumbUp,
-    this.reactionThumbDown,
-    this.reactionLike,
+    required this.reactionThumbUp,
+    required this.reactionThumbDown,
+    required this.reactionLike,
   }) : super(key: key);
 
   @override
