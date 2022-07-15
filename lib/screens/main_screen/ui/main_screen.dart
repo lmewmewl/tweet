@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:tweet_sample/db/sql_db/db.dart';
 
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
@@ -40,7 +41,6 @@ class _MainScreenState extends State<MainScreen> {
         child: const Icon(
           Icons.sailing,
           size: 20,
-          color: Colors.black,
         ),
       ),
     );

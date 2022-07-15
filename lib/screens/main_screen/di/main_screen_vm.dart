@@ -18,12 +18,24 @@ abstract class _MainScreenVM with Store {
   List<TweetModel> tweetList = [];
 
   @action
-  void getTweetList() async {
+  Future<void> getTweetList() async {
     currrentStatus = AsyncStatus.downloading;
-    final list = await SqlDB.instance.readAllTweets();
 
-    tweetList.addAll(list);
-    currrentStatus = AsyncStatus.downloaded;
+    try {
+      final list = await SqlDB.instance.readAllTweets();
+
+      if (list.isEmpty) {
+        currrentStatus = AsyncStatus.empty;
+      } else {
+        tweetList.addAll(list);
+
+        currrentStatus = AsyncStatus.downloaded;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+
+      currrentStatus = AsyncStatus.error;
+    }
   }
 
   @action

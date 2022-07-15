@@ -45,7 +45,7 @@ mixin _$MainScreenVM on _MainScreenVM, Store {
       AsyncAction('_MainScreenVM.getTweetList', context: context);
 
   @override
-  Future getTweetList() {
+  Future<void> getTweetList() {
     return _$getTweetListAsyncAction.run(() => super.getTweetList());
   }
 
