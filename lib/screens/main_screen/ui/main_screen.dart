@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:tweet_sample/db/sql_db/db.dart';
+import 'package:tweet_sample/components/tweet_create/ui/tweet_create.dart';
 
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
@@ -33,15 +33,19 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: Observer(
         builder: (_) {
-          return mainVM.mainTweetWidget(mainVM.currrentStatus);
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text('Reactions count: ${mainVM.reactionsCount}'),
+              ),
+              Expanded(child: mainVM.mainTweetWidget(mainVM.currrentStatus)),
+              TweetCreate(
+                mainScreenVM: mainVM,
+              ),
+            ],
+          );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => print('Bump'),
-        child: const Icon(
-          Icons.sailing,
-          size: 20,
-        ),
       ),
     );
   }

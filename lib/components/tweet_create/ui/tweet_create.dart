@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
-import 'package:tweet_sample/components/tweet_create/di/tweet_create_vm.dart';
+import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
 class TweetCreate extends StatefulWidget {
-  final TweetCreateVM tweetCreateVM;
+  final MainScreenVM mainScreenVM;
+
   const TweetCreate({
     Key? key,
-    required this.tweetCreateVM,
+    required this.mainScreenVM,
   }) : super(key: key);
 
   @override
@@ -14,16 +16,51 @@ class TweetCreate extends StatefulWidget {
 }
 
 class _TweetCreateState extends State<TweetCreate> {
-  TweetCreateVM get tweetCreateVM => widget.tweetCreateVM;
+  MainScreenVM get mainScreenVM => widget.mainScreenVM;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: tweetCreateVM.contentController,
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 20,
+        horizontal: 15,
+      ),
+      child: Row(
+        children: [
+          Flexible(
+            child: TextField(
+              minLines: 1,
+              maxLines: 5,
+              decoration: const InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.blue),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.greenAccent),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.blue,
+                  ),
+                ),
+                hintText: 'Enter a tweet',
+              ),
+              controller: mainScreenVM.tweetCreateController,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          IconButton(
+            onPressed: () => mainScreenVM.createTweet(),
+            icon: const Icon(
+              Icons.subway,
+              size: 30,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

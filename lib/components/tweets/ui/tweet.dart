@@ -4,6 +4,7 @@ import 'package:tweet_sample/components/tweet_reactions/ui/tweet_reaction.dart';
 import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
 import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 
+/// Tweet item widget
 class TweetWidget extends StatefulWidget {
   final TweetModel tweetData;
   final TweetVM tweetVM;
@@ -23,33 +24,59 @@ class _TweetWidget extends State<TweetWidget> {
   TweetModel get tweetData => widget.tweetData;
 
   @override
+  void initState() {
+    tweetVM.reactionCompare(tweetData.reaction!);
+
+    super.initState();
+  }
+
+  @override
   Widget build(
     BuildContext context,
   ) {
     return Observer(builder: (_) {
-      return TextButton(
-        onPressed: () {
-          (tweetVM.isReacted == false)
-              ? showModalBottomSheet<void>(
+      return InkWell(
+        onTap: (tweetVM.isReacted == false)
+            ? () {
+                showModalBottomSheet<void>(
                   context: _,
-                  builder: (BuildContext context) {
+                  builder: (BuildContext _) {
                     return TweetReaction(
                       reactionLike: () {
-                        tweetVM.changeReactionStatus(Reactions.like, true);
+                        tweetData.isReacted =
+                            tweetVM.changeReactionStatus(Reactions.like, true);
+                        tweetData.reaction = 'like';
+
+                        tweetVM.updateReaction(tweetData);
+
                         Navigator.pop(_);
                       },
                       reactionThumbDown: () {
-                        tweetVM.changeReactionStatus(Reactions.thumbDown, true);
+                        tweetData.isReacted = tweetVM.changeReactionStatus(
+                            Reactions.thumbDown, true);
+                        tweetData.reaction = 'thumbDown';
+                        tweetVM.updateReaction(tweetData);
+
                         Navigator.pop(_);
                       },
                       reactionThumbUp: () {
-                        tweetVM.changeReactionStatus(Reactions.thumbUp, true);
+                        tweetData.isReacted = tweetVM.changeReactionStatus(
+                            Reactions.thumbUp, true);
+                        tweetData.reaction = 'thumbUp';
+                        tweetVM.updateReaction(tweetData);
+
                         Navigator.pop(_);
                       },
                     );
-                  })
-              : tweetVM.changeReactionStatus(Reactions.noReaction, false);
-        },
+                  },
+                );
+              }
+            : () {
+                tweetData.isReacted =
+                    tweetVM.changeReactionStatus(Reactions.noReaction, false);
+                tweetData.reaction = '';
+                tweetVM.updateReaction(tweetData);
+              },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

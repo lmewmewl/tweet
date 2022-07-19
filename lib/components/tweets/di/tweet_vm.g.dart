@@ -25,15 +25,45 @@ mixin _$TweetVM on _TweetVM, Store {
     });
   }
 
+  late final _$updateReactionAsyncAction =
+      AsyncAction('_TweetVM.updateReaction', context: context);
+
+  @override
+  Future<void> updateReaction(TweetModel model) {
+    return _$updateReactionAsyncAction.run(() => super.updateReaction(model));
+  }
+
   late final _$_TweetVMActionController =
       ActionController(name: '_TweetVM', context: context);
 
   @override
-  void changeReactionStatus(Reactions current, bool reaction) {
+  bool changeReactionStatus(Reactions current, bool reaction) {
     final _$actionInfo = _$_TweetVMActionController.startAction(
         name: '_TweetVM.changeReactionStatus');
     try {
       return super.changeReactionStatus(current, reaction);
+    } finally {
+      _$_TweetVMActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  int countUpdate(int count) {
+    final _$actionInfo =
+        _$_TweetVMActionController.startAction(name: '_TweetVM.countUpdate');
+    try {
+      return super.countUpdate(count);
+    } finally {
+      _$_TweetVMActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void reactionCompare(String reaction) {
+    final _$actionInfo = _$_TweetVMActionController.startAction(
+        name: '_TweetVM.reactionCompare');
+    try {
+      return super.reactionCompare(reaction);
     } finally {
       _$_TweetVMActionController.endAction(_$actionInfo);
     }

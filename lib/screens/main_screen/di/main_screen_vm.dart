@@ -11,6 +11,22 @@ part 'main_screen_vm.g.dart';
 class MainScreenVM = _MainScreenVM with _$MainScreenVM;
 
 abstract class _MainScreenVM with Store {
+  /// Input controller
+  @observable
+  TextEditingController tweetCreateController = TextEditingController();
+
+  _MainScreenVM() : super() {
+    tweetCreateController.addListener(() {
+      tweetContent = tweetCreateController.text;
+    });
+  }
+
+  @observable
+  String tweetContent = '';
+
+  @observable
+  int reactionsCount = 0;
+
   @observable
   AsyncStatus currrentStatus = AsyncStatus.empty;
 
@@ -18,16 +34,36 @@ abstract class _MainScreenVM with Store {
   List<TweetModel> tweetList = [];
 
   @action
+  void createTweet() {
+    if (tweetCreateController.text.isNotEmpty) {
+      SqlDB.instance.create(
+        TweetModel(
+          content: tweetContent,
+          reaction: '',
+          isReacted: false,
+        )..toMap(),
+      );
+
+      tweetCreateController.clear();
+    }
+  }
+
+  @action
   Future<void> getTweetList() async {
     currrentStatus = AsyncStatus.downloading;
 
     try {
       final list = await SqlDB.instance.readAllTweets();
-
-      if (list.isEmpty) {
+      if (list.isEmpty == true) {
         currrentStatus = AsyncStatus.empty;
       } else {
         tweetList.addAll(list);
+
+        for (var item in list) {
+          if (item.isReacted == true) {
+            reactionsCount++;
+          }
+        }
 
         currrentStatus = AsyncStatus.downloaded;
       }

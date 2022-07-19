@@ -31,8 +31,8 @@ class SqlDB {
   /// On create
   Future _onCreateInitTweetDB(Database db, int version) async {
     const intType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    const boolType = 'BOOLEAN NOT NULL';
-    const stringType = 'TEXT NOT NULL';
+    const boolType = 'TEXT';
+    const stringType = 'TEXT';
     const reactionType = 'TEXT';
 
     await db.execute('''CREATE TABLE $tableTweets (
@@ -44,17 +44,17 @@ class SqlDB {
   }
 
   /// Close db
-  Future closeTweetDB() async {
-    final db = await instance._tweetsDB;
+  Future<void> closeTweetDB() async {
+    final db = instance._tweetsDB;
 
-    db!.close();
+    await db!.close();
   }
 
   Future<TweetModel> create(TweetModel model) async {
     final db = await instance.databaseTweets;
     final tweet = await db.insert(tableTweets, model.toMap());
 
-    return model.copy(id: tweet);
+    return model;
   }
 
   /// Read single tweet

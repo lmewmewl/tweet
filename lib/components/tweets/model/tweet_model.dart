@@ -10,13 +10,13 @@ class TweetModelFileds {
 }
 
 class TweetModel {
-  late int id;
+  int? id;
   late String content;
   String? reaction;
   bool isReacted = false;
 
   TweetModel({
-    required this.id,
+    this.id,
     required this.content,
     required this.reaction,
     required this.isReacted,
@@ -26,15 +26,16 @@ class TweetModel {
     this.id = json['id'];
     this.content = json['content'];
     this.reaction = json['reaction'];
-    this.isReacted = json['isReacted'];
+    this.isReacted == json['isReacted'];
   }
 
   Map<String, dynamic> toMap() {
+    String _reacted = isReacted.toString();
     return {
       TweetModelFileds.id: id,
       TweetModelFileds.content: content,
       TweetModelFileds.reaction: reaction,
-      TweetModelFileds.isReacted: isReacted,
+      TweetModelFileds.isReacted: _reacted,
     };
   }
 
