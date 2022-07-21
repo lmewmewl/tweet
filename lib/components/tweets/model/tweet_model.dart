@@ -10,7 +10,7 @@ class TweetModelFileds {
 }
 
 class TweetModel {
-  final int? id;
+  int? id;
   String content;
   String reaction;
   int isReacted;

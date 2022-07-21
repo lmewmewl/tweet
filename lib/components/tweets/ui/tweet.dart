@@ -4,15 +4,12 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tweet_sample/components/tweet_reactions/ui/tweet_reaction.dart';
 import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
 import 'package:tweet_sample/components/tweets/di/tweets_count.dart';
-import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 
 /// Tweet item widget
 class TweetWidget extends StatefulWidget {
-  final TweetModel tweetData;
   final TweetVM tweetVM;
   const TweetWidget({
     Key? key,
-    required this.tweetData,
     required this.tweetVM,
   }) : super(key: key);
 
@@ -23,68 +20,56 @@ class TweetWidget extends StatefulWidget {
 class _TweetWidget extends State<TweetWidget> {
   TweetVM get tweetVM => widget.tweetVM;
 
-  TweetModel get tweetData => widget.tweetData;
-
   @override
-  void initState() {
-    tweetVM.reactionCompare(tweetData.reaction);
-
-    super.initState();
-  }
-
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return Observer(builder: (_) {
+  Widget build(BuildContext context) {
+    return Observer(builder: (ctx) {
       return InkWell(
-        onTap: (tweetVM.isReacted == false)
+        onTap: (tweetVM.tweetData.isReacted == 0)
             ? () {
                 showModalBottomSheet<void>(
-                  context: _,
+                  context: ctx,
                   builder: (BuildContext _) {
                     return TweetReaction(
-                      reactionLike: () async {
+                      reactionLike: () {
+                        setState(() {
+                          tweetVM.changeReactionStatus(
+                              true, 'like', tweetsCountInstance.reactionsCount);
+                        });
+
                         Navigator.pop(_);
-                        await tweetVM.changeReactionStatus(
-                            Reactions.like,
-                            true,
-                            tweetData,
-                            'like',
-                            tweetsCountInstance.reactionsCount);
                       },
-                      reactionThumbDown: () async {
+                      reactionThumbDown: () {
+                        setState(() {
+                          tweetVM.changeReactionStatus(true, 'thumbDown',
+                              tweetsCountInstance.reactionsCount);
+                        });
+
                         Navigator.pop(_);
-                        await tweetVM.changeReactionStatus(
-                            Reactions.thumbDown,
-                            true,
-                            tweetData,
-                            'thumbDown',
-                            tweetsCountInstance.reactionsCount);
                       },
-                      reactionThumbUp: () async {
+                      reactionThumbUp: () {
+                        setState(() {
+                          tweetVM.changeReactionStatus(true, 'thumbUp',
+                              tweetsCountInstance.reactionsCount);
+                        });
+
                         Navigator.pop(_);
-                        await tweetVM.changeReactionStatus(
-                            Reactions.thumbUp,
-                            true,
-                            tweetData,
-                            'thumbUp',
-                            tweetsCountInstance.reactionsCount);
                       },
                     );
                   },
                 );
               }
-            : () async {
-                await tweetVM.changeReactionStatus(Reactions.noReaction, false,
-                    tweetData, '', tweetsCountInstance.reactionsCount);
+            : () {
+                setState(() {
+                  tweetVM.changeReactionStatus(
+                      false, '', tweetsCountInstance.reactionsCount);
+                });
               },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              tweetData.content,
+              tweetVM.tweetData.content,
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black,
@@ -94,7 +79,9 @@ class _TweetWidget extends State<TweetWidget> {
             const SizedBox(
               height: 10,
             ),
-            tweetVM.widgetReactionChange(tweetVM.currentReaction)
+            tweetVM.widgetReactionChange(
+              tweetVM.reactionCompare(tweetVM.tweetData.reaction),
+            ),
           ],
         ),
       );

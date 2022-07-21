@@ -9,6 +9,22 @@ part of 'tweet_vm.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$TweetVM on _TweetVM, Store {
+  late final _$tweetDataAtom =
+      Atom(name: '_TweetVM.tweetData', context: context);
+
+  @override
+  TweetModel get tweetData {
+    _$tweetDataAtom.reportRead();
+    return super.tweetData;
+  }
+
+  @override
+  set tweetData(TweetModel value) {
+    _$tweetDataAtom.reportWrite(value, super.tweetData, () {
+      super.tweetData = value;
+    });
+  }
+
   late final _$currentReactionAtom =
       Atom(name: '_TweetVM.currentReaction', context: context);
 
@@ -29,11 +45,10 @@ mixin _$TweetVM on _TweetVM, Store {
       AsyncAction('_TweetVM.changeReactionStatus', context: context);
 
   @override
-  Future<void> changeReactionStatus(Reactions current, bool reacted,
-      TweetModel model, String newReaction, int globalCount) {
-    return _$changeReactionStatusAsyncAction.run(() => super
-        .changeReactionStatus(
-            current, reacted, model, newReaction, globalCount));
+  Future<void> changeReactionStatus(
+      bool reacted, String newReaction, int globalCount) {
+    return _$changeReactionStatusAsyncAction.run(
+        () => super.changeReactionStatus(reacted, newReaction, globalCount));
   }
 
   late final _$_updateReactionAsyncAction =
@@ -59,7 +74,7 @@ mixin _$TweetVM on _TweetVM, Store {
   }
 
   @override
-  void reactionCompare(String reaction) {
+  Reactions reactionCompare(String reaction) {
     final _$actionInfo = _$_TweetVMActionController.startAction(
         name: '_TweetVM.reactionCompare');
     try {
@@ -70,11 +85,11 @@ mixin _$TweetVM on _TweetVM, Store {
   }
 
   @override
-  Widget widgetReactionChange(Reactions reacts) {
+  Widget widgetReactionChange(Reactions reactions) {
     final _$actionInfo = _$_TweetVMActionController.startAction(
         name: '_TweetVM.widgetReactionChange');
     try {
-      return super.widgetReactionChange(reacts);
+      return super.widgetReactionChange(reactions);
     } finally {
       _$_TweetVMActionController.endAction(_$actionInfo);
     }
@@ -83,6 +98,7 @@ mixin _$TweetVM on _TweetVM, Store {
   @override
   String toString() {
     return '''
+tweetData: ${tweetData},
 currentReaction: ${currentReaction}
     ''';
   }

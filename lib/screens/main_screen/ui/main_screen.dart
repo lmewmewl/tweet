@@ -21,9 +21,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    mainVM.getTweetList();
-
     super.initState();
+    mainVM.getTweetList();
   }
 
   @override
@@ -42,9 +41,10 @@ class _MainScreenState extends State<MainScreen> {
             }),
           ),
           Observer(
-            builder: (_) {
+            builder: (__) {
               return Expanded(
-                  child: mainVM.mainTweetWidget(mainVM.currrentStatus));
+                child: mainVM.mainTweetWidget(mainVM.currrentStatus),
+              );
             },
           ),
           TweetCreate(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+
 import 'package:tweet_sample/components/tweets/di/tweets_count.dart';
 import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 import 'package:tweet_sample/db/sql_db/db.dart';
@@ -13,62 +14,36 @@ enum Reactions { thumbUp, thumbDown, like, noReaction }
 class TweetVM = _TweetVM with _$TweetVM;
 
 abstract class _TweetVM with Store {
-  bool isReacted;
+  @observable
+  TweetModel tweetData;
 
   @observable
   Reactions currentReaction = Reactions.noReaction;
 
   _TweetVM({
-    required this.isReacted,
+    required this.tweetData,
   });
 
   @action
-  Future<void> changeReactionStatus(Reactions current, bool reacted,
-      TweetModel model, String newReaction, int globalCount) async {
-    currentReaction = current;
-    isReacted = reacted;
-
+  Future<void> changeReactionStatus(
+      bool reacted, String newReaction, int globalCount) async {
     int flag = (reacted) ? 1 : 0;
 
-    model.reaction = newReaction;
-    model.isReacted = flag;
-
+    tweetData.reaction = newReaction;
+    tweetData.isReacted = flag;
+    reactionCompare(newReaction);
     _countUpdate();
 
-    await _updateReaction(model);
+    await _updateReaction(tweetData);
   }
 
   @action
   int _countUpdate() {
+    bool isReacted = (tweetData.isReacted == 1) ? true : false;
     if (isReacted == true) {
       return tweetsCountInstance.reactionsCount++;
     } else {
       return tweetsCountInstance.reactionsCount--;
-    }
-  }
-
-  @action
-  void reactionCompare(String reaction) {
-    switch (reaction) {
-      case 'thumbUp':
-        {
-          currentReaction = Reactions.thumbUp;
-          break;
-        }
-      case 'thumbDown':
-        {
-          currentReaction = Reactions.thumbDown;
-          break;
-        }
-      case 'like':
-        {
-          currentReaction = Reactions.like;
-          break;
-        }
-      case "":
-        {
-          currentReaction = Reactions.noReaction;
-        }
     }
   }
 
@@ -78,8 +53,30 @@ abstract class _TweetVM with Store {
   }
 
   @action
-  Widget widgetReactionChange(Reactions reacts) {
-    switch (reacts) {
+  Reactions reactionCompare(String reaction) {
+    switch (reaction) {
+      case 'thumbUp':
+        {
+          return currentReaction = Reactions.thumbUp;
+        }
+      case 'thumbDown':
+        {
+          return currentReaction = Reactions.thumbDown;
+        }
+      case 'like':
+        {
+          return currentReaction = Reactions.like;
+        }
+      default:
+        {
+          return currentReaction = Reactions.noReaction;
+        }
+    }
+  }
+
+  @action
+  Widget widgetReactionChange(Reactions reactions) {
+    switch (reactions) {
       case Reactions.thumbUp:
         {
           return const Text('👍');
@@ -92,6 +89,7 @@ abstract class _TweetVM with Store {
         {
           return const Text('♥️');
         }
+
       case Reactions.noReaction:
         {
           return Container();

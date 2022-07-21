@@ -33,6 +33,7 @@ abstract class _MainScreenVM with Store {
 
   @action
   Future<void> createTweet() async {
+    currrentStatus = AsyncStatus.downloading;
     if (tweetContent.isNotEmpty) {
       TweetModel model = TweetModel(
         content: tweetContent,
@@ -40,12 +41,13 @@ abstract class _MainScreenVM with Store {
         reaction: '',
       );
 
-      await SqlDB.instance.create(model);
+      int newTweetID = await SqlDB.instance.create(model);
+      model.id = newTweetID;
+      tweetList.add(model);
 
       tweetCreateController.clear();
+      currrentStatus = AsyncStatus.downloaded;
     }
-    tweetList.clear();
-    getTweetList();
   }
 
   @action
@@ -90,13 +92,12 @@ abstract class _MainScreenVM with Store {
               vertical: 10,
             ),
             itemCount: tweetList.length,
-            itemBuilder: (context, index) => TweetWidget(
+            itemBuilder: (_, index) => TweetWidget(
               tweetVM: TweetVM(
-                  isReacted: (tweetList[index].isReacted == 1) ? true : false),
-              tweetData: tweetList[index],
+                tweetData: tweetList[index],
+              ),
             ),
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
+            separatorBuilder: (BuildContext _, int index) => const Divider(),
           );
         }
       case AsyncStatus.downloading:

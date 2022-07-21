@@ -39,7 +39,7 @@ class SqlDB {
         ${TweetModelFileds.id} $intType,
         ${TweetModelFileds.content} $stringType,
         ${TweetModelFileds.reaction} $reactionType,
-        ${TweetModelFileds.isReacted} $boolType,
+        ${TweetModelFileds.isReacted} $boolType
          )''');
   }
 
@@ -50,14 +50,14 @@ class SqlDB {
     await db!.close();
   }
 
-  Future<TweetModel> create(TweetModel model) async {
+  Future<int> create(TweetModel model) async {
     Map<String, dynamic> tweet = model.toMap();
 
     final db = await instance.databaseTweets;
-    await db.insert(tableTweets, tweet,
+    int newTweetID = await db.insert(tableTweets, tweet,
         conflictAlgorithm: ConflictAlgorithm.replace);
 
-    return model;
+    return newTweetID;
   }
 
   /// Read all tweets
