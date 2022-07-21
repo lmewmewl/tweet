@@ -31,7 +31,7 @@ class SqlDB {
   /// On create
   Future _onCreateInitTweetDB(Database db, int version) async {
     const intType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    const boolType = 'TEXT';
+    const boolType = 'INTEGER NOT NULL';
     const stringType = 'TEXT';
     const reactionType = 'TEXT';
 
@@ -39,7 +39,7 @@ class SqlDB {
         ${TweetModelFileds.id} $intType,
         ${TweetModelFileds.content} $stringType,
         ${TweetModelFileds.reaction} $reactionType,
-        ${TweetModelFileds.isReacted} $boolType
+        ${TweetModelFileds.isReacted} $boolType,
          )''');
   }
 
@@ -51,46 +51,44 @@ class SqlDB {
   }
 
   Future<TweetModel> create(TweetModel model) async {
+    Map<String, dynamic> tweet = model.toMap();
+
     final db = await instance.databaseTweets;
-    final tweet = await db.insert(tableTweets, model.toMap());
+    await db.insert(tableTweets, tweet,
+        conflictAlgorithm: ConflictAlgorithm.replace);
 
     return model;
-  }
-
-  /// Read single tweet
-  Future<TweetModel> readTweet(int id) async {
-    final db = await instance.databaseTweets;
-
-    final map = await db.query(
-      tableTweets,
-      columns: TweetModelFileds.values,
-      where: '${TweetModelFileds.id} = ?',
-      whereArgs: [id],
-    );
-
-    if (map.isNotEmpty) {
-      return TweetModel.fromMap(map.first);
-    } else {
-      throw Exception('ID $id not found');
-    }
   }
 
   /// Read all tweets
   Future<List<TweetModel>> readAllTweets() async {
     final db = await instance.databaseTweets;
 
-    final list = await db.query(tableTweets);
+    List<Map<String, dynamic>> list = await db.query(tableTweets);
 
-    return list.map((json) => TweetModel.fromMap(json)).toList();
+    List<TweetModel> currentList = List.generate(list.length, (index) {
+      return TweetModel(
+        id: list[index]['id'],
+        content: list[index]['content'],
+        reaction: list[index]['reaction'],
+        isReacted: list[index]['isReacted'],
+      );
+    });
+
+    return currentList;
   }
 
   Future<int> updateTweet(TweetModel model) async {
     final db = await instance.databaseTweets;
-    return db.update(
+    Map<String, dynamic> json = model.toMap();
+
+    int dbUpdate = await db.update(
       tableTweets,
-      model.toMap(),
-      where: '${TweetModelFileds.id} = ?',
+      json,
+      where: 'id = ?',
       whereArgs: [model.id],
     );
+
+    return dbUpdate;
   }
 }

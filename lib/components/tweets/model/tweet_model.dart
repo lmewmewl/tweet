@@ -10,10 +10,10 @@ class TweetModelFileds {
 }
 
 class TweetModel {
-  int? id;
-  late String content;
-  String? reaction;
-  bool isReacted = false;
+  final int? id;
+  String content;
+  String reaction;
+  int isReacted;
 
   TweetModel({
     this.id,
@@ -22,33 +22,12 @@ class TweetModel {
     required this.isReacted,
   });
 
-  TweetModel.fromMap(Map<String, dynamic> json) {
-    this.id = json['id'];
-    this.content = json['content'];
-    this.reaction = json['reaction'];
-    this.isReacted == json['isReacted'];
-  }
-
   Map<String, dynamic> toMap() {
-    String _reacted = isReacted.toString();
     return {
-      TweetModelFileds.id: id,
-      TweetModelFileds.content: content,
-      TweetModelFileds.reaction: reaction,
-      TweetModelFileds.isReacted: _reacted,
+      'id': id,
+      'content': content,
+      'reaction': reaction,
+      'isReacted': isReacted,
     };
   }
-
-  TweetModel copy({
-    int? id,
-    String? content,
-    String? reaction,
-    bool? isReacted,
-  }) =>
-      TweetModel(
-        id: id ?? this.id,
-        content: content ?? this.content,
-        reaction: reaction ?? this.reaction,
-        isReacted: isReacted ?? this.isReacted,
-      );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tweet_sample/components/tweet_create/ui/tweet_create.dart';
+import 'package:tweet_sample/components/tweets/di/tweets_count.dart';
 
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
@@ -31,21 +32,25 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text('Tweets'),
       ),
-      body: Observer(
-        builder: (_) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text('Reactions count: ${mainVM.reactionsCount}'),
-              ),
-              Expanded(child: mainVM.mainTweetWidget(mainVM.currrentStatus)),
-              TweetCreate(
-                mainScreenVM: mainVM,
-              ),
-            ],
-          );
-        },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Observer(builder: (_) {
+              return Text(
+                  'Reactions count: ${tweetsCountInstance.reactionsCount}');
+            }),
+          ),
+          Observer(
+            builder: (_) {
+              return Expanded(
+                  child: mainVM.mainTweetWidget(mainVM.currrentStatus));
+            },
+          ),
+          TweetCreate(
+            mainScreenVM: mainVM,
+          )
+        ],
       ),
     );
   }

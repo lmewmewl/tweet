@@ -52,13 +52,17 @@ class _TweetCreateState extends State<TweetCreate> {
           const SizedBox(
             width: 10,
           ),
-          IconButton(
-            onPressed: () => mainScreenVM.createTweet(),
-            icon: const Icon(
-              Icons.subway,
-              size: 30,
-            ),
-          )
+          Observer(builder: (_) {
+            return IconButton(
+              onPressed: (mainScreenVM.tweetContent.isNotEmpty)
+                  ? () => mainScreenVM.createTweet()
+                  : null,
+              icon: const Icon(
+                Icons.subway,
+                size: 30,
+              ),
+            );
+          })
         ],
       ),
     );

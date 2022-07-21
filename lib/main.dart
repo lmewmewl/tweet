@@ -9,6 +9,6 @@ void main() async {
   await SqlDB.instance.initTweetDB();
 
   runApp(
-    MyApp(),
+    const MyApp(),
   );
 }

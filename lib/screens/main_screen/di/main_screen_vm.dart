@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tweet_sample/components/tweets/di/tweet_vm.dart';
+import 'package:tweet_sample/components/tweets/di/tweets_count.dart';
 import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 import 'package:tweet_sample/components/tweets/ui/tweet.dart';
 import 'package:tweet_sample/db/sql_db/db.dart';
@@ -25,27 +26,26 @@ abstract class _MainScreenVM with Store {
   String tweetContent = '';
 
   @observable
-  int reactionsCount = 0;
-
-  @observable
   AsyncStatus currrentStatus = AsyncStatus.empty;
 
   @observable
   List<TweetModel> tweetList = [];
 
   @action
-  void createTweet() {
-    if (tweetCreateController.text.isNotEmpty) {
-      SqlDB.instance.create(
-        TweetModel(
-          content: tweetContent,
-          reaction: '',
-          isReacted: false,
-        )..toMap(),
+  Future<void> createTweet() async {
+    if (tweetContent.isNotEmpty) {
+      TweetModel model = TweetModel(
+        content: tweetContent,
+        isReacted: 0,
+        reaction: '',
       );
+
+      await SqlDB.instance.create(model);
 
       tweetCreateController.clear();
     }
+    tweetList.clear();
+    getTweetList();
   }
 
   @action
@@ -58,18 +58,17 @@ abstract class _MainScreenVM with Store {
         currrentStatus = AsyncStatus.empty;
       } else {
         tweetList.addAll(list);
-
+        tweetsCountInstance.reactionsCount = 0;
         for (var item in list) {
-          if (item.isReacted == true) {
-            reactionsCount++;
+          bool reaction = (item.isReacted == 1) ? true : false;
+          if (reaction == true) {
+            tweetsCountInstance.reactionsCount++;
           }
         }
 
         currrentStatus = AsyncStatus.downloaded;
       }
     } catch (e) {
-      debugPrint(e.toString());
-
       currrentStatus = AsyncStatus.error;
     }
   }
@@ -92,7 +91,8 @@ abstract class _MainScreenVM with Store {
             ),
             itemCount: tweetList.length,
             itemBuilder: (context, index) => TweetWidget(
-              tweetVM: TweetVM(isReacted: tweetList[index].isReacted),
+              tweetVM: TweetVM(
+                  isReacted: (tweetList[index].isReacted == 1) ? true : false),
               tweetData: tweetList[index],
             ),
             separatorBuilder: (BuildContext context, int index) =>

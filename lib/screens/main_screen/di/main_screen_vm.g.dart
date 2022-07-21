@@ -42,22 +42,6 @@ mixin _$MainScreenVM on _MainScreenVM, Store {
     });
   }
 
-  late final _$reactionsCountAtom =
-      Atom(name: '_MainScreenVM.reactionsCount', context: context);
-
-  @override
-  int get reactionsCount {
-    _$reactionsCountAtom.reportRead();
-    return super.reactionsCount;
-  }
-
-  @override
-  set reactionsCount(int value) {
-    _$reactionsCountAtom.reportWrite(value, super.reactionsCount, () {
-      super.reactionsCount = value;
-    });
-  }
-
   late final _$currrentStatusAtom =
       Atom(name: '_MainScreenVM.currrentStatus', context: context);
 
@@ -90,6 +74,14 @@ mixin _$MainScreenVM on _MainScreenVM, Store {
     });
   }
 
+  late final _$createTweetAsyncAction =
+      AsyncAction('_MainScreenVM.createTweet', context: context);
+
+  @override
+  Future<void> createTweet() {
+    return _$createTweetAsyncAction.run(() => super.createTweet());
+  }
+
   late final _$getTweetListAsyncAction =
       AsyncAction('_MainScreenVM.getTweetList', context: context);
 
@@ -100,17 +92,6 @@ mixin _$MainScreenVM on _MainScreenVM, Store {
 
   late final _$_MainScreenVMActionController =
       ActionController(name: '_MainScreenVM', context: context);
-
-  @override
-  void createTweet() {
-    final _$actionInfo = _$_MainScreenVMActionController.startAction(
-        name: '_MainScreenVM.createTweet');
-    try {
-      return super.createTweet();
-    } finally {
-      _$_MainScreenVMActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   Widget mainTweetWidget(AsyncStatus status) {
@@ -128,7 +109,6 @@ mixin _$MainScreenVM on _MainScreenVM, Store {
     return '''
 tweetCreateController: ${tweetCreateController},
 tweetContent: ${tweetContent},
-reactionsCount: ${reactionsCount},
 currrentStatus: ${currrentStatus},
 tweetList: ${tweetList}
     ''';

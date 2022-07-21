@@ -25,34 +25,34 @@ mixin _$TweetVM on _TweetVM, Store {
     });
   }
 
-  late final _$updateReactionAsyncAction =
-      AsyncAction('_TweetVM.updateReaction', context: context);
+  late final _$changeReactionStatusAsyncAction =
+      AsyncAction('_TweetVM.changeReactionStatus', context: context);
 
   @override
-  Future<void> updateReaction(TweetModel model) {
-    return _$updateReactionAsyncAction.run(() => super.updateReaction(model));
+  Future<void> changeReactionStatus(Reactions current, bool reacted,
+      TweetModel model, String newReaction, int globalCount) {
+    return _$changeReactionStatusAsyncAction.run(() => super
+        .changeReactionStatus(
+            current, reacted, model, newReaction, globalCount));
+  }
+
+  late final _$_updateReactionAsyncAction =
+      AsyncAction('_TweetVM._updateReaction', context: context);
+
+  @override
+  Future<void> _updateReaction(TweetModel model) {
+    return _$_updateReactionAsyncAction.run(() => super._updateReaction(model));
   }
 
   late final _$_TweetVMActionController =
       ActionController(name: '_TweetVM', context: context);
 
   @override
-  bool changeReactionStatus(Reactions current, bool reaction) {
-    final _$actionInfo = _$_TweetVMActionController.startAction(
-        name: '_TweetVM.changeReactionStatus');
-    try {
-      return super.changeReactionStatus(current, reaction);
-    } finally {
-      _$_TweetVMActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  int countUpdate(int count) {
+  int _countUpdate() {
     final _$actionInfo =
-        _$_TweetVMActionController.startAction(name: '_TweetVM.countUpdate');
+        _$_TweetVMActionController.startAction(name: '_TweetVM._countUpdate');
     try {
-      return super.countUpdate(count);
+      return super._countUpdate();
     } finally {
       _$_TweetVMActionController.endAction(_$actionInfo);
     }

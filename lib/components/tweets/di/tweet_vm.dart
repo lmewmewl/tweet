@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
+import 'package:tweet_sample/components/tweets/di/tweets_count.dart';
 import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 import 'package:tweet_sample/db/sql_db/db.dart';
 
@@ -22,17 +23,27 @@ abstract class _TweetVM with Store {
   });
 
   @action
-  bool changeReactionStatus(Reactions current, bool reaction) {
+  Future<void> changeReactionStatus(Reactions current, bool reacted,
+      TweetModel model, String newReaction, int globalCount) async {
     currentReaction = current;
-    return isReacted = reaction;
+    isReacted = reacted;
+
+    int flag = (reacted) ? 1 : 0;
+
+    model.reaction = newReaction;
+    model.isReacted = flag;
+
+    _countUpdate();
+
+    await _updateReaction(model);
   }
 
   @action
-  int countUpdate(int count) {
-    if (isReacted == false) {
-      return count++;
+  int _countUpdate() {
+    if (isReacted == true) {
+      return tweetsCountInstance.reactionsCount++;
     } else {
-      return count--;
+      return tweetsCountInstance.reactionsCount--;
     }
   }
 
@@ -62,8 +73,7 @@ abstract class _TweetVM with Store {
   }
 
   @action
-  Future<void> updateReaction(TweetModel model) async {
-    print(model.isReacted);
+  Future<void> _updateReaction(TweetModel model) async {
     await SqlDB.instance.updateTweet(model);
   }
 
