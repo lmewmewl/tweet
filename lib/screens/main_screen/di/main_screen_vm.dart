@@ -9,10 +9,10 @@ import 'package:mobx/mobx.dart';
 
 part 'main_screen_vm.g.dart';
 
+/// Main screen view model
 class MainScreenVM = _MainScreenVM with _$MainScreenVM;
 
 abstract class _MainScreenVM with Store {
-  /// Input controller
   @observable
   TextEditingController tweetCreateController = TextEditingController();
 
@@ -43,7 +43,7 @@ abstract class _MainScreenVM with Store {
 
       int newTweetID = await SqlDB.instance.create(model);
       model.id = newTweetID;
-      tweetList.add(model);
+      tweetList.insert(0, model);
 
       tweetCreateController.clear();
       currrentStatus = AsyncStatus.downloaded;
@@ -59,7 +59,7 @@ abstract class _MainScreenVM with Store {
       if (list.isEmpty == true) {
         currrentStatus = AsyncStatus.empty;
       } else {
-        tweetList.addAll(list);
+        tweetList.addAll(list.reversed);
         tweetsCountInstance.reactionsCount = 0;
         for (var item in list) {
           bool reaction = (item.isReacted == 1) ? true : false;

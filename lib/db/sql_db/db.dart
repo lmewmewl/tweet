@@ -4,9 +4,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tweet_sample/components/tweets/model/tweet_model.dart';
 
-/// Sql db class
+/// Sql db singleton
 class SqlDB {
-  /// Singleton instance
   SqlDB._();
   static final SqlDB instance = SqlDB._();
 
@@ -50,6 +49,7 @@ class SqlDB {
     await db!.close();
   }
 
+  /// Create item
   Future<int> create(TweetModel model) async {
     Map<String, dynamic> tweet = model.toMap();
 
@@ -78,6 +78,7 @@ class SqlDB {
     return currentList;
   }
 
+  /// Update item
   Future<int> updateTweet(TweetModel model) async {
     final db = await instance.databaseTweets;
     Map<String, dynamic> json = model.toMap();

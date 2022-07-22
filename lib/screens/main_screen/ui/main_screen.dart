@@ -5,6 +5,7 @@ import 'package:tweet_sample/components/tweets/di/tweets_count.dart';
 
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
+/// Main screen widget
 class MainScreen extends StatefulWidget {
   final MainScreenVM mainVM;
   const MainScreen({

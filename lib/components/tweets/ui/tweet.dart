@@ -27,6 +27,7 @@ class _TweetWidget extends State<TweetWidget> {
         onTap: (tweetVM.tweetData.isReacted == 0)
             ? () {
                 showModalBottomSheet<void>(
+                  isScrollControlled: true,
                   context: ctx,
                   builder: (BuildContext _) {
                     return TweetReaction(

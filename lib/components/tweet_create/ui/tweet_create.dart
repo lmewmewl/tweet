@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'package:tweet_sample/screens/main_screen/di/main_screen_vm.dart';
 
+/// Tweet create widget
 class TweetCreate extends StatefulWidget {
   final MainScreenVM mainScreenVM;
 

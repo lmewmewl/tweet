@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Tweet reactions widget
 class TweetReaction extends StatefulWidget {
   final Function()? reactionThumbUp;
   final Function()? reactionThumbDown;
